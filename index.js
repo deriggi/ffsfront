@@ -4,7 +4,6 @@ import { Pane, Checkbox, Text, Table } from 'evergreen-ui'
 
 const API_BASE = 'http://localhost:8080/ffs';
 
-const MAX_LENGTH = 5;
 
 class DataPuller extends React.Component {
 
@@ -31,10 +30,27 @@ class DataPuller extends React.Component {
       }
 
       handleChange(e, row , i){
-        console.log(e.target.checked, i);
-        let x = this.state.sites[row].flags[i] ===0?1:0
-        this.setState(state => (this.state.sites[row].flags[i] = x, state));
+        // console.log(e.target.checked, i);
+        let newFlag = this.state.sites[row].flags[i] ===0?1:0
+        this.setState(state => (this.state.sites[row].flags[i] = newFlag, state));
+        this.updateStatus(row,i, newFlag);
       }
+
+      updateStatus(row, i, newFlag){
+        let site = {...this.state.sites[row]};
+        site.flags[i] = newFlag;
+        site.value = parseInt(site.flags.join(''), 2)
+        console.log(site);
+
+        //   fetch(`${API_BASE}`, this.makePostOptions(site))
+        //   .then(res => res.json())
+        //   .then(asJson => this.setState({sites:asJson}))
+        //   .catch(e => console.log(e));
+
+
+      }
+
+
 
       makeTableRow(fs, row){
          
@@ -46,6 +62,12 @@ class DataPuller extends React.Component {
 
         return p;
 
+      }
+
+      makePostOptions(data){
+        return {method:'POST', 
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data) }
       }
 
       makeCheckBox(flag, row, i){

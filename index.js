@@ -30,24 +30,26 @@ class DataPuller extends React.Component {
         
       }
 
-      handleChange(e){
-        console.log(e);
+      handleChange(e, row , i){
+        console.log(e.target.checked, i);
+        let x = this.state.sites[row].flags[i] ===0?1:0
+        this.setState(state => (this.state.sites[row].flags[i] = x, state));
       }
 
-      makeTableRow(fs, i){
+      makeTableRow(fs, row){
          
         let p = 
-        <Table.Row key={i}>
+        <Table.Row key={row}>
             <Table.TextCell>{fs.name}</Table.TextCell>
-            {fs.flags.map( flag => this.makeCheckBox(flag))}
+            {fs.flags.map( (flag, i) => this.makeCheckBox(flag, row, i))}
         </Table.Row>
 
         return p;
 
       }
 
-      makeCheckBox(flag){
-        return <Table.Cell flexBasis={30} flexShrink={0} flexGrow={0}><Checkbox checked={flag===1} onChange={e => setState({ checked: e.target.checked })}/></Table.Cell>
+      makeCheckBox(flag, row, i){
+        return <Table.Cell flexBasis={30} flexShrink={0} flexGrow={0}><Checkbox checked={flag===1}  onChange={e => this.handleChange(e, row, i)}/></Table.Cell>
       }
 
       render(){

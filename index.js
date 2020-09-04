@@ -20,22 +20,28 @@ class DataPuller extends React.Component {
 
     componentDidMount() {
         console.log("fetching");
-        fetch(`${FFS_BASE}`)
-          .then(data => data.json())
-          .then(asJson => {
-            console.log(asJson)
-            this.setState({sites: asJson});
-            console.log(this.state)
-          }).catch(e => console.log(e));
+        this.fetchRegions();
+        this.fetchFfs();
+      }
 
-          fetch(`${REGIONS_BASE}`)
-          .then(data => data.json())
-          .then(asJson => {
-            console.log(asJson)
-            this.setState({regions: asJson});
-            console.log(this.state)
-          }).catch(e => console.log(e));
-        
+      fetchRegions(){
+        fetch(`${REGIONS_BASE}`)
+        .then(data => data.json())
+        .then(asJson => {
+          console.log(asJson)
+          this.setState({regions: asJson});
+          console.log(this.state)
+        }).catch(e => console.log(e));
+
+      }
+      fetchFfs(){
+        fetch(`${FFS_BASE}`)
+        .then(data => data.json())
+        .then(asJson => {
+          console.log(asJson)
+          this.setState({sites: asJson});
+          console.log(this.state)
+        }).catch(e => console.log(e));
       }
 
       handleChange(e, row , i){
@@ -64,8 +70,8 @@ class DataPuller extends React.Component {
       makeTableRow(fs, row){
          
         let p = 
-        <Table.Row key={row}>
-            <Table.TextCell>{fs.name}</Table.TextCell>
+        <Table.Row key={row} >
+            <Table.TextCell flexBasis={400} >{this.formatName(fs.name)}</Table.TextCell>
             {fs.flags.map( (flag, i) => this.makeCheckBox(flag, row, i))}
         </Table.Row>
 
@@ -73,8 +79,14 @@ class DataPuller extends React.Component {
 
       }
 
-      makeHeaderCell(region, row){        
-           return  <Table.TextHeaderCell key={row} flexBasis={560} flexShrink={0} flexGrow={0} >{region}</Table.TextHeaderCell>
+      formatName(name){
+            let n  =  name.replace('_',' ').replace(/([a-z])([A-Z])/g, '$1 $2')
+            let capFirst = n.charAt(0).toUpperCase();
+            return capFirst + n.slice(1);
+        }
+
+      makeHeaderCell(region, index){        
+           return  <Table.TextHeaderCell key={index} flexBasis={index==-1?400:10}  >{region}</Table.TextHeaderCell>
       }
 
       makePostOptions(data){
@@ -84,7 +96,7 @@ class DataPuller extends React.Component {
       }
 
       makeCheckBox(flag, row, i){
-        return <Table.Cell ><Checkbox checked={flag===1}  onChange={e => this.handleChange(e, row, i)}/></Table.Cell>
+        return <Table.Cell key={i}  flexBasis={10} ><Checkbox checked={flag===1}  onChange={e => this.handleChange(e, row, i)}/></Table.Cell>
       }
 
       render(){
@@ -92,7 +104,7 @@ class DataPuller extends React.Component {
             <Pane width={840} elevation={1} margin="auto" marginTop={30}>
                 <Table margin={1}>
                     <Table.Head>
-                    {this.makeHeaderCell('feature', -1)}
+                    {this.makeHeaderCell('Feature', -1)}
                     {this.state.regions.map( (region,i) => this.makeHeaderCell(region, i) )}
                         {/* <Table.TextHeaderCell>Last Activity</Table.TextHeaderCell>
                         <Table.TextHeaderCell>ltv</Table.TextHeaderCell> */}

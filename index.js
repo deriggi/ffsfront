@@ -45,7 +45,6 @@ class DataPuller extends React.Component {
       }
 
       handleChange(e, row , i){
-        // console.log(e.target.checked, i);
         let newFlag = this.state.sites[row].flags[i] ===0?1:0
         this.setState(state => (this.state.sites[row].flags[i] = newFlag, state));
         this.updateStatus(row,i, newFlag);
@@ -61,11 +60,7 @@ class DataPuller extends React.Component {
           .then(res => res.json())
           .then(asJson => this.setState({sites:asJson}))
           .catch(e => console.log(e));
-
-
       }
-
-
 
       makeTableRow(fs, row){
          
@@ -106,8 +101,6 @@ class DataPuller extends React.Component {
                     <Table.Head>
                     {this.makeHeaderCell('Feature', -1)}
                     {this.state.regions.map( (region,i) => this.makeHeaderCell(region, i) )}
-                        {/* <Table.TextHeaderCell>Last Activity</Table.TextHeaderCell>
-                        <Table.TextHeaderCell>ltv</Table.TextHeaderCell> */}
                     </Table.Head>
                     <Table.Body >
                         {this.state.sites.map( (s,i) => this.makeTableRow(s, i))}
